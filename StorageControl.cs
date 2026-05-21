@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace Oxide.Plugins
 {
     [Info("StorageControl", "mcduffiejohn", "1.0.0")]
-    [Description("Resize player inventory and storage container slot counts via config")]
+    [Description("Resize storage container slot counts via config")]
     public class StorageControl : RustPlugin
     {
         #region Configuration
@@ -14,13 +14,6 @@ namespace Oxide.Plugins
 
         private class Configuration
         {
-            // -- Player --------------------------------------------------------------
-            [JsonProperty("Player: main inventory slots (game default 24)")]
-            public int PlayerMainSlots = 24;
-
-            [JsonProperty("Player: belt / hotbar slots (game default 6)")]
-            public int PlayerBeltSlots = 6;
-
             // -- General storage -----------------------------------------------------
             [JsonProperty("Small wooden box slots (game default 12)")]
             public int SmallBox = 12;
@@ -87,7 +80,7 @@ namespace Oxide.Plugins
 
         #endregion
 
-        #region Prefab → Slot Mapping
+        #region Prefab Mapping
 
         // Returns configured slot count for the given ShortPrefabName, or -1 if unmanaged.
         private int GetConfiguredSlots(string prefabName)
@@ -115,6 +108,26 @@ namespace Oxide.Plugins
             }
         }
 
+        // Pure storage containers get panelName = "generic" so the client renders
+        // a scrollable grid instead of the fixed-layout native panel.
+        // Cooking/crafting containers and containers with special UIs (vending, TC)
+        // must keep their native panels -- changing them breaks functional slot roles
+        // or the container's own UI (auth list, market screen, etc.).
+        private static bool UseGenericPanel(string prefabName)
+        {
+            switch (prefabName)
+            {
+                case "woodbox_deployed":
+                case "large_woodbox_deployed":
+                case "fridge.deployed":
+                case "locker.deployed":
+                case "dropbox.deployed":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         #endregion
 
         #region Apply Helpers
@@ -125,15 +138,9 @@ namespace Oxide.Plugins
             int slots = GetConfiguredSlots(container.ShortPrefabName);
             if (slots <= 0) return;
             container.inventory.capacity = slots;
+            if (UseGenericPanel(container.ShortPrefabName))
+                container.panelName = "generic";
             container.SendNetworkUpdateImmediate();
-        }
-
-        private void ApplyPlayerInventory(BasePlayer player)
-        {
-            if (player?.inventory == null) return;
-            player.inventory.containerMain.capacity = _config.PlayerMainSlots;
-            player.inventory.containerBelt.capacity = _config.PlayerBeltSlots;
-            player.inventory.SendSnapshot();
         }
 
         #endregion
@@ -142,29 +149,18 @@ namespace Oxide.Plugins
 
         private void OnServerInitialized()
         {
-            // Resize all containers already on the map
             int containerCount = 0;
             foreach (var net in BaseNetworkable.serverEntities)
             {
                 var container = net as StorageContainer;
                 if (container == null || container.IsDestroyed) continue;
-                int configured = GetConfiguredSlots(container.ShortPrefabName);
-                if (configured > 0)
+                if (GetConfiguredSlots(container.ShortPrefabName) > 0)
                 {
                     ApplyContainer(container);
                     containerCount++;
                 }
             }
-
-            // Resize inventory of all connected players
-            int playerCount = 0;
-            foreach (var player in BasePlayer.activePlayerList)
-            {
-                ApplyPlayerInventory(player);
-                playerCount++;
-            }
-
-            Puts($"Loaded. Resized {containerCount} containers and {playerCount} player inventories.");
+            Puts($"Loaded. Resized {containerCount} containers.");
         }
 
         private void OnEntitySpawned(BaseNetworkable net)
@@ -172,11 +168,6 @@ namespace Oxide.Plugins
             var container = net as StorageContainer;
             if (container != null)
                 NextTick(() => { if (container != null && !container.IsDestroyed) ApplyContainer(container); });
-        }
-
-        private void OnPlayerInit(BasePlayer player)
-        {
-            ApplyPlayerInventory(player);
         }
 
         #endregion
@@ -203,15 +194,13 @@ namespace Oxide.Plugins
             if (arg.Connection != null && !arg.IsAdmin) return;
             LoadConfig();
             OnServerInitialized();
-            arg.ReplyWith("StorageControl: config reloaded and all containers/players updated.");
+            arg.ReplyWith("StorageControl: config reloaded and all containers updated.");
         }
 
         private string BuildStatus()
         {
             return
                 "=== Storage Control ===\n" +
-                $"  Player main inventory : {_config.PlayerMainSlots} slots\n" +
-                $"  Player belt / hotbar  : {_config.PlayerBeltSlots} slots\n" +
                 $"  Small wooden box      : {_config.SmallBox} slots\n" +
                 $"  Large wooden box      : {_config.LargeBox} slots\n" +
                 $"  Fridge                : {_config.Fridge} slots\n" +
@@ -225,7 +214,7 @@ namespace Oxide.Plugins
                 $"  BBQ                   : {_config.BBQ} slots\n" +
                 $"  Oil refinery          : {_config.OilRefinery} slots\n" +
                 $"  Mixing table          : {_config.MixingTable} slots\n" +
-                "Edit oxide/config/StorageControl.json and run 'storagecontrol.reload' to apply changes.";
+                "Edit oxide/config/StorageControl.json and run 'storagecontrol.reload' to apply.";
         }
 
         #endregion
