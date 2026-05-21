@@ -16,31 +16,31 @@ namespace Oxide.Plugins
 
         private class Configuration
         {
-            // ── Frequency ────────────────────────────────────────────────────────
+            // -- Frequency ------------------------------------------------------------
             [JsonProperty("Custom drop frequency in minutes (0 = do not override server timing)")]
             public float FrequencyMinutes = 0f;
 
             [JsonProperty("Max simultaneous active drops on the map (0 = no cap)")]
             public int MaxActiveDrops = 0;
 
-            // ── Map marker ───────────────────────────────────────────────────────
+            // -- Map marker -----------------------------------------------------------
             [JsonProperty("Show map marker when drop lands")]
             public bool ShowMapMarker = true;
 
             [JsonProperty("Map marker fill color hex (e.g. #FF6600 for orange)")]
             public string MarkerColor = "#FF6600";
 
-            [JsonProperty("Map marker radius on map (0.1 small – 0.5 large)")]
+            [JsonProperty("Map marker radius on map (0.1 small - 0.5 large)")]
             public float MarkerRadius = 0.3f;
 
-            // ── Announcements ────────────────────────────────────────────────────
+            // -- Announcements --------------------------------------------------------
             [JsonProperty("Broadcast to all players when a drop lands")]
             public bool AnnounceOnLand = true;
 
             [JsonProperty("Broadcast to all players when a drop is first opened")]
             public bool AnnounceOnFirstLoot = true;
 
-            // ── Loot ─────────────────────────────────────────────────────────────
+            // -- Loot -----------------------------------------------------------------
             [JsonProperty("Override drop loot with table below (false = game default loot)")]
             public bool OverrideLoot = false;
 
@@ -96,6 +96,7 @@ namespace Oxide.Plugins
             {
                 _config = Config.ReadObject<Configuration>();
                 if (_config == null) LoadDefaultConfig();
+                if (_config.LootTable == null) _config.LootTable = Configuration.BuildDefaultLootTable();
             }
             catch
             {
@@ -111,15 +112,15 @@ namespace Oxide.Plugins
 
         #region State
 
-        // SupplyDrop net.ID → map marker
-        private readonly Dictionary<uint, MapMarkerGenericRadius> _markers =
-            new Dictionary<uint, MapMarkerGenericRadius>();
+        // SupplyDrop net.ID -> map marker (ulong in this Rust build)
+        private readonly Dictionary<ulong, MapMarkerGenericRadius> _markers =
+            new Dictionary<ulong, MapMarkerGenericRadius>();
 
         // SupplyDrop net.IDs that are currently active (spawned, not yet killed)
-        private readonly HashSet<uint> _activeDropIds = new HashSet<uint>();
+        private readonly HashSet<ulong> _activeDropIds = new HashSet<ulong>();
 
         // SupplyDrop net.IDs that have already had a first-loot announcement
-        private readonly HashSet<uint> _announcedLoot = new HashSet<uint>();
+        private readonly HashSet<ulong> _announcedLoot = new HashSet<ulong>();
 
         private Timer _frequencyTimer;
 
@@ -129,6 +130,11 @@ namespace Oxide.Plugins
 
         private void OnServerInitialized()
         {
+            if (_config == null)
+            {
+                LoadDefaultConfig();
+                SaveConfig();
+            }
             StartFrequencyTimer();
             Puts("Loaded.");
         }
@@ -153,7 +159,7 @@ namespace Oxide.Plugins
             if (_config.OverrideLoot)
             {
                 // Brief delay so the game has time to run its own PopulateLoot first, then we replace
-                uint id = drop.net.ID.Value;
+                ulong id = drop.net.ID.Value;
                 timer.Once(0.3f, () =>
                 {
                     if (drop == null || drop.IsDestroyed) return;
@@ -186,7 +192,7 @@ namespace Oxide.Plugins
             var drop = entity as SupplyDrop;
             if (drop?.net == null) return;
 
-            uint id = drop.net.ID.Value;
+            ulong id = drop.net.ID.Value;
             if (_announcedLoot.Contains(id)) return;
             _announcedLoot.Add(id);
 
@@ -212,7 +218,7 @@ namespace Oxide.Plugins
             var drop = entity as SupplyDrop;
             if (drop?.net == null) return;
 
-            uint id = drop.net.ID.Value;
+            ulong id = drop.net.ID.Value;
             _activeDropIds.Remove(id);
             _announcedLoot.Remove(id);
             RemoveMarker(id);
@@ -268,7 +274,7 @@ namespace Oxide.Plugins
             _markers[drop.net.ID.Value] = marker;
         }
 
-        private void RemoveMarker(uint dropId)
+        private void RemoveMarker(ulong dropId)
         {
             if (!_markers.TryGetValue(dropId, out var marker)) return;
             _markers.Remove(dropId);

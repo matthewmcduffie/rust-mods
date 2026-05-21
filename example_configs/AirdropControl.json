@@ -1,0 +1,197 @@
+// AirdropControl - Example Configuration
+// -----------------------------------------------------------------------
+// Copy to: oxide/config/AirdropControl.json
+// Apply:   airdropcontrol.reload  (or oxide.reload AirdropControl)
+//
+// JSON does not support comments. Remove all lines starting with //
+// before dropping this file into your config folder, or let the plugin
+// generate a fresh one and edit the values in place.
+// -----------------------------------------------------------------------
+
+{
+  // Trigger an airdrop automatically every N minutes.
+  // 0 = disabled, server controls its own airdrop timing.
+  // This fires in addition to any server-native airdrops.
+  "Custom drop frequency in minutes (0 = do not override server timing)": 45,
+
+  // Stop scheduling new drops once this many are active on the map.
+  // Prevents stacking if players ignore drops. 0 = no cap.
+  "Max simultaneous active drops on the map (0 = no cap)": 2,
+
+  // Spawn a colored radius marker on the map when the crate lands.
+  // Marker is removed automatically once the crate is fully looted.
+  "Show map marker when drop lands": true,
+
+  // HTML hex color for the map marker fill.
+  // #FF6600 = orange (default), #00FF00 = green, #FF0000 = red
+  "Map marker fill color hex (e.g. #FF6600 for orange)": "#FF6600",
+
+  // Visible size of the marker on the map. 0.1 = tiny, 0.5 = large.
+  "Map marker radius on map (0.1 small - 0.5 large)": 0.25,
+
+  // Chat broadcast sent to all players when the crate hits the ground.
+  // Message includes the grid reference (e.g. "H7").
+  "Broadcast to all players when a drop lands": true,
+
+  // Chat broadcast when the first player opens the crate.
+  // Shows the player's display name and grid ref.
+  "Broadcast to all players when a drop is first opened": true,
+
+  // Set to true to replace the crate contents with the table below.
+  // false = game picks the loot normally, table is ignored entirely.
+  "Override drop loot with table below (false = game default loot)": true,
+
+  // Number of item slots to fill per crate when override is on.
+  // 0 = fill every slot in the container.
+  "Items to put in each drop when override is on (0 = fill all slots)": 6,
+
+  // Loot table used when Override is true.
+  // Each entry is rolled independently: if Random(0,1) <= probability
+  // the item is included. Items are shuffled (Fisher-Yates) before
+  // rolling so each drop gets variety even at the same probabilities.
+  //
+  // Fields per entry:
+  //   shortname   - Rust item short name (must be exact)
+  //   displayName - Label shown in logs/errors only, not in-game
+  //   minAmount   - Minimum stack size when the item is chosen
+  //   maxAmount   - Maximum stack size (inclusive)
+  //   probability - 0.0 to 1.0 chance the item appears in a given drop
+  //   skinId      - Workshop skin ID, 0 = default skin
+  "Loot table -- only used when Override is true": [
+    {
+      // Primary rifles - low probability keeps them rare
+      "shortname": "rifle.ak",
+      "displayName": "AK-47",
+      "minAmount": 1,
+      "maxAmount": 1,
+      "probability": 0.15,
+      "skinId": 0
+    },
+    {
+      "shortname": "rifle.lr300",
+      "displayName": "LR-300",
+      "minAmount": 1,
+      "maxAmount": 1,
+      "probability": 0.15,
+      "skinId": 0
+    },
+    {
+      "shortname": "rifle.m39",
+      "displayName": "M39 Rifle",
+      "minAmount": 1,
+      "maxAmount": 1,
+      "probability": 0.10,
+      "skinId": 0
+    },
+    {
+      // LMG - very rare, high reward for competitive servers
+      "shortname": "lmg.m249",
+      "displayName": "M249",
+      "minAmount": 1,
+      "maxAmount": 1,
+      "probability": 0.05,
+      "skinId": 0
+    },
+    {
+      // Ammo - high probability so winners can actually use the guns
+      "shortname": "ammo.rifle",
+      "displayName": "5.56 Rifle Ammo",
+      "minAmount": 64,
+      "maxAmount": 256,
+      "probability": 0.85,
+      "skinId": 0
+    },
+    {
+      "shortname": "ammo.pistol",
+      "displayName": "Pistol Bullet",
+      "minAmount": 64,
+      "maxAmount": 128,
+      "probability": 0.60,
+      "skinId": 0
+    },
+    {
+      // Explosives - C4 probability kept moderate to avoid griefing floods
+      "shortname": "explosive.timed",
+      "displayName": "C4",
+      "minAmount": 1,
+      "maxAmount": 3,
+      "probability": 0.30,
+      "skinId": 0
+    },
+    {
+      "shortname": "grenade.beancan",
+      "displayName": "Beancan Grenade",
+      "minAmount": 2,
+      "maxAmount": 6,
+      "probability": 0.40,
+      "skinId": 0
+    },
+    {
+      // Medical - high probability, strong incentive to contest the drop
+      "shortname": "medical.syringe",
+      "displayName": "Medical Syringe",
+      "minAmount": 2,
+      "maxAmount": 5,
+      "probability": 0.75,
+      "skinId": 0
+    },
+    {
+      "shortname": "largemedkit",
+      "displayName": "Large Medkit",
+      "minAmount": 1,
+      "maxAmount": 2,
+      "probability": 0.50,
+      "skinId": 0
+    },
+    {
+      // Armor
+      "shortname": "coffeecan.helmet",
+      "displayName": "Coffee Can Helmet",
+      "minAmount": 1,
+      "maxAmount": 1,
+      "probability": 0.25,
+      "skinId": 0
+    },
+    {
+      "shortname": "heavy.plate.jacket",
+      "displayName": "Heavy Plate Jacket",
+      "minAmount": 1,
+      "maxAmount": 1,
+      "probability": 0.20,
+      "skinId": 0
+    },
+    {
+      // Crafting materials
+      "shortname": "fuel.lowgrade",
+      "displayName": "Low Grade Fuel",
+      "minAmount": 50,
+      "maxAmount": 200,
+      "probability": 0.60,
+      "skinId": 0
+    },
+    {
+      "shortname": "gunpowder",
+      "displayName": "Gun Powder",
+      "minAmount": 100,
+      "maxAmount": 500,
+      "probability": 0.55,
+      "skinId": 0
+    },
+    {
+      "shortname": "metal.refined",
+      "displayName": "High Quality Metal",
+      "minAmount": 5,
+      "maxAmount": 25,
+      "probability": 0.45,
+      "skinId": 0
+    },
+    {
+      "shortname": "cloth",
+      "displayName": "Cloth",
+      "minAmount": 50,
+      "maxAmount": 200,
+      "probability": 0.50,
+      "skinId": 0
+    }
+  ]
+}

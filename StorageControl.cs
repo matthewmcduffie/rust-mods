@@ -14,14 +14,14 @@ namespace Oxide.Plugins
 
         private class Configuration
         {
-            // ── Player ──────────────────────────────────────────────────────────
+            // -- Player --------------------------------------------------------------
             [JsonProperty("Player: main inventory slots (game default 24)")]
             public int PlayerMainSlots = 24;
 
             [JsonProperty("Player: belt / hotbar slots (game default 6)")]
             public int PlayerBeltSlots = 6;
 
-            // ── General storage ─────────────────────────────────────────────────
+            // -- General storage -----------------------------------------------------
             [JsonProperty("Small wooden box slots (game default 12)")]
             public int SmallBox = 12;
 
@@ -43,7 +43,7 @@ namespace Oxide.Plugins
             [JsonProperty("Tool cupboard slots (game default 12)")]
             public int ToolCupboard = 12;
 
-            // ── Crafting / cooking ───────────────────────────────────────────────
+            // -- Crafting / cooking --------------------------------------------------
             // These containers have functional slot roles (fuel, input, output).
             // Only increase these -- shrinking below the functional minimum breaks them.
             [JsonProperty("Furnace slots -- functional slots, increase only (game default 6)")]

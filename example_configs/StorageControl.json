@@ -1,0 +1,70 @@
+// StorageControl - Example Configuration
+// -----------------------------------------------------------------------
+// Copy to: oxide/config/StorageControl.json
+// Apply:   storagecontrol.reload
+//          (resizes all containers and connected players immediately)
+//
+// JSON does not support comments. Remove all lines starting with //
+// before dropping this file into your config folder, or let the plugin
+// generate a fresh one and edit the values in place.
+// -----------------------------------------------------------------------
+
+{
+  // --- Player inventory ---------------------------------------------------
+
+  // Main inventory row count. Game default is 24 (4 rows of 6).
+  // 30 = 5 rows, 36 = 6 rows. Avoid going below 24.
+  "Player: main inventory slots (game default 24)": 30,
+
+  // Hotbar slots across the bottom. Game default is 6.
+  // Most players expect exactly 6 -- change with caution.
+  "Player: belt / hotbar slots (game default 6)": 6,
+
+  // --- General storage ----------------------------------------------------
+
+  // Small wooden box. Game default 12.
+  "Small wooden box slots (game default 12)": 18,
+
+  // Large wooden box. Game default 30.
+  "Large wooden box slots (game default 30)": 48,
+
+  // Fridge. Game default 36.
+  "Fridge slots (game default 36)": 48,
+
+  // Locker (holds armor sets). Game default 30.
+  "Locker slots (game default 30)": 36,
+
+  // Drop box (wall slot). Game default 6.
+  "Drop box slots (game default 6)": 12,
+
+  // Vending machine stock slots. Game default 9.
+  "Vending machine slots (game default 9)": 9,
+
+  // Tool cupboard authorization. Game default 12.
+  "Tool cupboard slots (game default 12)": 12,
+
+  // --- Crafting and cooking -----------------------------------------------
+  // WARNING: Do NOT reduce these below their game defaults.
+  // These containers have dedicated functional slots (fuel, input, output).
+  // Shrinking below the minimum breaks the container's recipe UI.
+
+  // Furnace. Game default 6 (1 fuel + 3 input + 2 output).
+  // Safe to increase; do not go below 6.
+  "Furnace slots -- functional slots, increase only (game default 6)": 9,
+
+  // Large furnace. Game default 18.
+  "Large furnace slots -- functional slots, increase only (game default 18)": 18,
+
+  // Campfire. Game default 12.
+  "Campfire slots -- functional slots, increase only (game default 12)": 12,
+
+  // BBQ (Barbeque). Game default 12.
+  "BBQ slots -- functional slots, increase only (game default 12)": 12,
+
+  // Small oil refinery. Game default 5 (1 fuel + 1 crude + 3 output).
+  // Do not go below 5.
+  "Oil refinery slots -- functional slots, increase only (game default 5)": 5,
+
+  // Mixing table. Game default 6.
+  "Mixing table slots -- functional slots, increase only (game default 6)": 6
+}

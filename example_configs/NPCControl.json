@@ -1,0 +1,36 @@
+// NPCControl - Example Configuration
+// -----------------------------------------------------------------------
+// Copy to: oxide/config/NPCControl.json
+// Apply:   oxide.reload NPCControl
+//
+// JSON does not support comments. Remove all lines starting with //
+// before dropping this file into your config folder, or let the plugin
+// generate a fresh one and edit the values in place.
+// -----------------------------------------------------------------------
+
+{
+  // How hard bandits hit. 1.0 = server default. 0.75 = 25% softer.
+  // Covers all damage types (bullet, melee, explosive) via ScaleAll().
+  // Bandits: bandit_guard, murderer, scientist, heavyscientist,
+  //          tunnel_dweller, underwater_dweller, scarecrow
+  "Bandit outgoing damage multiplier (1.0 = default, 0.5 = half damage, 2.0 = double damage)": 0.75,
+
+  // How hard wildlife hits. 0.5 makes animals noticeably less deadly --
+  // good for servers where new players roam without armor.
+  // Wildlife: bear, polarbear, boar, chicken, stag, wolf, horse, shark
+  "Wildlife outgoing damage multiplier (1.0 = default, 0.5 = half damage, 2.0 = double damage)": 0.5,
+
+  // Hard cap on total bandits alive at once. 0 = no cap.
+  // Excess spawns are removed on NextTick. Count rebuilds every 5 min.
+  // Tune this down if scientists are hammering server perf on large maps.
+  "Max bandit NPCs on map at one time (0 = no cap enforced)": 40,
+
+  // Hard cap on total wildlife alive at once. 0 = no cap.
+  "Max wildlife NPCs on map at one time (0 = no cap enforced)": 80,
+
+  // Multiplies the animal.population ConVar on load and when changed.
+  // 1.5 = roughly 50% more animals spawning over time.
+  // Takes effect as the current population cycles out naturally.
+  // Does nothing if left at 1.0 (server default untouched).
+  "Wildlife population convar multiplier -- raises or lowers server spawn density (1.0 = server default, set 2.0 to roughly double, 0.5 to halve)": 1.5
+}
