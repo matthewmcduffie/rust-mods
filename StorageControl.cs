@@ -108,26 +108,6 @@ namespace Oxide.Plugins
             }
         }
 
-        // Pure storage containers get panelName = "generic" so the client renders
-        // a scrollable grid instead of the fixed-layout native panel.
-        // Cooking/crafting containers and containers with special UIs (vending, TC)
-        // must keep their native panels -- changing them breaks functional slot roles
-        // or the container's own UI (auth list, market screen, etc.).
-        private static bool UseGenericPanel(string prefabName)
-        {
-            switch (prefabName)
-            {
-                case "woodbox_deployed":
-                case "large_woodbox_deployed":
-                case "fridge.deployed":
-                case "locker.deployed":
-                case "dropbox.deployed":
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
         #endregion
 
         #region Apply Helpers
@@ -138,8 +118,6 @@ namespace Oxide.Plugins
             int slots = GetConfiguredSlots(container.ShortPrefabName);
             if (slots <= 0) return;
             container.inventory.capacity = slots;
-            if (UseGenericPanel(container.ShortPrefabName))
-                container.panelName = "generic";
             container.SendNetworkUpdateImmediate();
         }
 

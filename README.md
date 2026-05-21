@@ -90,25 +90,24 @@ Resize storage container slot counts across the server.
 - Configure slot counts for every vanilla storage container
 - Applied on server init (all existing containers) and on every new spawn
 - Single console command reloads config and reapplies everywhere live
-- Pure storage containers (boxes, fridge, locker, drop box) use a scrollable generic panel so all expanded slots are accessible
 
 **Config** — `oxide/config/StorageControl.json`
 
-| Container | Config Key | Game Default | Scrollable |
-|-----------|-----------|-------------|-----------|
-| Small wooden box | `SmallBox` | 12 | Yes |
-| Large wooden box | `LargeBox` | 30 | Yes |
-| Fridge | `Fridge` | 36 | Yes |
-| Locker | `Locker` | 30 | Yes |
-| Drop box | `DropBox` | 6 | Yes |
-| Vending machine | `VendingMachine` | 9 | No - fixed UI |
-| Tool cupboard | `ToolCupboard` | 12 | No - fixed UI |
-| Furnace | `Furnace` | 6 | No - functional slots |
-| Large furnace | `LargeFurnace` | 18 | No - functional slots |
-| Campfire | `Campfire` | 12 | No - functional slots |
-| BBQ | `BBQ` | 12 | No - functional slots |
-| Oil refinery | `OilRefinery` | 5 | No - functional slots |
-| Mixing table | `MixingTable` | 6 | No - functional slots |
+| Container | Config Key | Game Default |
+|-----------|-----------|-------------|
+| Small wooden box | `SmallBox` | 12 |
+| Large wooden box | `LargeBox` | 30 |
+| Fridge | `Fridge` | 36 |
+| Locker | `Locker` | 30 |
+| Drop box | `DropBox` | 6 |
+| Vending machine | `VendingMachine` | 9 |
+| Tool cupboard | `ToolCupboard` | 12 |
+| Furnace | `Furnace` | 6 |
+| Large furnace | `LargeFurnace` | 18 |
+| Campfire | `Campfire` | 12 |
+| BBQ | `BBQ` | 12 |
+| Oil refinery | `OilRefinery` | 5 |
+| Mixing table | `MixingTable` | 6 |
 
 > **Note:** Do not shrink furnace, campfire, BBQ, oil refinery, or mixing table below their game defaults — those slots have functional roles (fuel, input, output) and reducing them breaks the container.
 
